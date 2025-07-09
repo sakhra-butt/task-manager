@@ -1,16 +1,14 @@
 // src/routes/AppRoutes.jsx
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from "react-router-dom";
 
-import Login from '../pages/Login';
-import Register from '../pages/Register';
-import ForgotPassword from '../pages/ForgotPassword';
-import ManageTasks from '../pages/ManageTasks';
-import NewTask from '../pages/NewTask';
-import EditTask from '../pages/EditTask';
+import Login from "../pages/login";
+import Register from "../pages/Register";
+import ForgotPassword from "../pages/ForgotPassword";
+import ManageTasks from "../pages/ManageTasks";
 
 // LocalStorage-based authentication check
 const isAuthenticated = () => {
-  const user = JSON.parse(localStorage.getItem('currentUser'));
+  const user = JSON.parse(localStorage.getItem("currentUser"));
   return user !== null;
 };
 
@@ -22,16 +20,25 @@ const PrivateRoute = ({ children }) => {
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={isAuthenticated() ? "/manage-tasks" : "/login"} />} />
+      <Route
+        path="/"
+        element={
+          <Navigate to={isAuthenticated() ? "/manage-tasks" : "/login"} />
+        }
+      />
 
       <Route
         path="/login"
-        element={isAuthenticated() ? <Navigate to="/manage-tasks" /> : <Login />}
+        element={
+          isAuthenticated() ? <Navigate to="/manage-tasks" /> : <Login />
+        }
       />
 
       <Route
         path="/register"
-        element={isAuthenticated() ? <Navigate to="/manage-tasks" /> : <Register />}
+        element={
+          isAuthenticated() ? <Navigate to="/manage-tasks" /> : <Register />
+        }
       />
 
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -41,24 +48,6 @@ export default function AppRoutes() {
         element={
           <PrivateRoute>
             <ManageTasks />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/manage-tasks/new"
-        element={
-          <PrivateRoute>
-            <NewTask />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/manage-tasks/:id"
-        element={
-          <PrivateRoute>
-            <EditTask />
           </PrivateRoute>
         }
       />

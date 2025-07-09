@@ -1,8 +1,8 @@
-// src/pages/Register.jsx
-import React from 'react';
-import { Form, Input, Button, Typography, Card, message } from 'antd';
-import { useNavigate, Link } from 'react-router-dom';
-import '../styles/index.scss';
+import React from "react";
+import { Form, Input, Button, Typography, Card, message } from "antd";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import AuthLayout from "../components/authLayout";
 
 const { Title } = Typography;
 
@@ -10,16 +10,14 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleRegister = (values) => {
-    console.log('Registering user with values:', values);
-
-    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const users = JSON.parse(localStorage.getItem("users")) || [];
 
     const userExists = users.some(
       (user) => user.email.toLowerCase() === values.email.toLowerCase()
     );
 
     if (userExists) {
-      message.error('A user with this email already exists.');
+      message.error("A user with this email already exists.");
       return;
     }
 
@@ -30,77 +28,78 @@ const Register = () => {
     };
 
     users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
 
-    message.success('Registration successful! Redirecting...');
-    setTimeout(() => {
-      navigate('/manage-tasks');
-    }, 1000);
+    message.success("Registration successful!");
+    navigate("/manage-tasks");
   };
 
   return (
-    <div
-      className="auth-container"
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        padding: 16,
-        background: 'transparent',
-      }}
-    >
-      <Card
-        style={{
-          width: '100%',
-          maxWidth: 400,
-          borderRadius: 12,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        }}
+    <AuthLayout>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        style={{ width: "100%", maxWidth: 480 }}
       >
-        <Title level={3} style={{ textAlign: 'center' }}>Register</Title>
+        <Card
+          style={{
+            borderRadius: 16,
+            boxShadow: "0 12px 28px rgba(0,0,0,0.1)",
+            padding: 32,
+          }}
+        >
+          <Title level={3} style={{ textAlign: "center", marginBottom: 32 }}>
+            Create Your Account
+          </Title>
 
-        <Form layout="vertical" onFinish={handleRegister} autoComplete="off">
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: 'Please enter your name' }]}
-          >
-            <Input placeholder="Enter name" autoComplete="off" />
-          </Form.Item>
+          <Form layout="vertical" onFinish={handleRegister} autoComplete="off">
+            <Form.Item
+              label="Full Name"
+              name="name"
+              rules={[{ required: true, message: "Please enter your name" }]}
+            >
+              <Input placeholder="John Doe" size="large" />
+            </Form.Item>
 
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: 'Please enter your email' },
-              { type: 'email', message: 'Invalid email address' },
-            ]}
-          >
-            <Input placeholder="Enter email" autoComplete="off" />
-          </Form.Item>
+            <Form.Item
+              label="Email Address"
+              name="email"
+              rules={[
+                { required: true, message: "Please enter your email" },
+                { type: "email", message: "Invalid email format" },
+              ]}
+            >
+              <Input placeholder="you@example.com" size="large" />
+            </Form.Item>
 
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: 'Please enter your password' }]}
-          >
-            <Input.Password placeholder="Enter password" autoComplete="new-password" />
-          </Form.Item>
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[
+                { required: true, message: "Please enter your password" },
+              ]}
+            >
+              <Input.Password
+                placeholder="Enter a secure password"
+                size="large"
+              />
+            </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block size="large">
-              Register
-            </Button>
-          </Form.Item>
+            <Form.Item style={{ marginTop: 24 }}>
+              <Button type="primary" htmlType="submit" block size="large">
+                Register
+              </Button>
+            </Form.Item>
 
-          <Form.Item style={{ textAlign: 'center', marginBottom: 0 }}>
-            Already have an account? <Link to="/login">Login here</Link>
-          </Form.Item>
-        </Form>
-      </Card>
-    </div>
+            <Form.Item style={{ textAlign: "center", marginBottom: 0 }}>
+              Already have an account? <Link to="/login">Login here</Link>
+            </Form.Item>
+          </Form>
+        </Card>
+      </motion.div>
+    </AuthLayout>
   );
 };
 
