@@ -1,0 +1,398 @@
+
+// General Transitions
+
+body,
+.login-page,
+.role-button,
+.ant-input,
+.ant-btn {
+  transition: all 0.3s ease;
+}
+
+
+// Light Theme Styles
+
+.light-theme {
+  background-color: #fff;
+  color: #000;
+
+  .ant-card {
+    background-color: #fff;
+    color: #000;
+
+    .ant-card-head {
+      color: #000;
+      background-color: #fff;
+    }
+  }
+
+  .navbar {
+    background-color: #f0f0f0;
+    color: #000;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .ant-typography {
+    color: #000 !important;
+  }
+
+  .themed-box {
+    background-color: #f0f0f0;
+    color: black;
+  }
+
+  .ant-input,
+  .ant-input-password input {
+    background-color: #fff !important;
+    color: #000 !important;
+    border: 1px solid #d9d9d9;
+
+    &::placeholder {
+      color: #000 !important;
+    }
+  }
+
+  .ant-form-item-label > label,
+  .ant-form-item-explain {
+    color: #000 !important;
+  }
+
+  .role-button {
+    background-color: #f0f0f0;
+    color: #000;
+    border: 1px solid #d9d9d9;
+
+    &:hover {
+      background-color: #1677ff !important;
+      color: #fff !important;
+      border-color: #1677ff !important;
+    }
+
+    &:active {
+      background-color: #0958d9 !important;
+      color: #fff !important;
+      border-color: #0958d9 !important;
+    }
+  }
+
+  .login-footer-text {
+    color: #333;
+  }
+}
+
+// Dark Theme Styles
+
+.dark-theme {
+  background-color: #121212;
+  color: #fff;
+
+  .ant-card {
+    background-color: #1e1e1e;
+    color: #fff;
+
+    .ant-card-head {
+      color: #fff;
+      background-color: #1e1e1e;
+    }
+  }
+
+  .navbar {
+    background-color: #333;
+    color: #fff;
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .ant-typography {
+    color: #fff !important;
+  }
+
+  .themed-box {
+    background-color: #333;
+    color: white;
+  }
+
+  .ant-input,
+  .ant-input-password input {
+    background-color: #1e1e1e !important;
+    color: #a0a0a0 !important;
+    border: 1px solid #444;
+
+    &::placeholder {
+      color: #a0a0a0 !important;
+    }
+  }
+
+  .ant-form-item-label > label,
+  .ant-form-item-explain {
+    color: #a0a0a0 !important;
+  }
+
+  .ant-btn {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #444;
+  }
+
+  .role-button {
+    background-color: #1e1e1e;
+    color: #ccc;
+    border: 1px solid #444;
+
+    &:hover {
+      background-color: #1677ff !important;
+      color: #fff !important;
+      border-color: #1677ff !important;
+    }
+
+    &:active {
+      background-color: #0958d9 !important;
+      color: #fff !important;
+      border-color: #0958d9 !important;
+    }
+  }
+
+  .login-footer-text {
+    color: #ccc;
+  }
+
+  .ant-input,
+  .ant-select-selector,
+  .ant-picker,
+  .ant-modal-content {
+    background-color: #2b2b2b !important;
+    color: #fff !important;
+    border-color: #555 !important;
+  }
+
+  .ant-input::placeholder {
+    color: #aaa;
+  }
+
+  .ant-select-selection-item {
+    color: #fff !important;
+  }
+
+  .ant-form-item-label > label {
+    color: #fff;
+  }
+
+  // Ant Table
+  .ant-table {
+    background-color: #1f1f1f;
+    color: #fff;
+
+    &-thead > tr > th {
+      background-color: #7c7b7b !important;
+      color: #fff !important;
+    }
+
+    &-tbody > tr > td {
+      background-color: #393939 !important;
+      color: #fff !important;
+    }
+
+    &-placeholder,
+    &-footer {
+      background-color: #1f1f1f !important;
+      color: #aaa !important;
+      border-top: 1px solid #444;
+    }
+
+    &-cell {
+      color: #fff;
+    }
+  }
+
+  // Buttons
+  .ant-btn-primary {
+    background-color: #1677ff !important;
+    border-color: #1677ff !important;
+    color: #fff !important;
+  }
+
+  .ant-btn-link {
+    color: #1677ff !important;
+
+    &.ant-btn-dangerous {
+      color: #ff4d4f !important;
+    }
+  }
+
+  .ant-input-search-button {
+    background-color: #1677ff !important;
+    border-color: #1677ff !important;
+    color: #fff !important;
+  }
+
+  // Pagination
+  .ant-pagination-item a,
+  .ant-pagination-prev .anticon,
+  .ant-pagination-next .anticon {
+    color: #6e6a6a !important;
+  }
+}
+
+
+// Shared Styles
+
+.login-btn {
+  background-color: #1677ff !important;
+  border-color: #1677ff !important;
+  color: #fff !important;
+
+  &:hover {
+    background-color: #0958d9 !important;
+    border-color: #0958d9 !important;
+    color: #fff !important;
+  }
+}
+
+
+// Register Page
+
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
+
+  &.light-theme {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  &.dark-theme {
+    background-color: #121212;
+    color: #ffffff;
+  }
+
+  .register-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 24px;
+    background-color: inherit;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    .ant-form-item-label > label {
+      color: inherit;
+    }
+
+    .ant-input,
+    .ant-input-password input {
+      background-color: transparent;
+      color: inherit;
+      border: 1px solid #ccc;
+    }
+
+    .ant-input::placeholder {
+      color: #999;
+    }
+
+    .ant-btn-primary {
+      background-color: #1677ff;
+      border-color: #1677ff;
+
+      &:hover {
+        background-color: #0958d9;
+        border-color: #0958d9;
+      }
+    }
+  }
+}
+
+
+// Login Page
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px;
+
+  .login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+
+  .themed-box {
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.login-footer-text {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 8px;
+
+  a {
+    color: #1677ff !important;
+    font-weight: 500;
+  }
+}
+
+
+// Logo Animation
+
+.logo-animated {
+  animation: spin 10s linear infinite;
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+// Login Container Card
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 16px;
+
+  .ant-card {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+
+// Manage Task Page
+
+.manage-task-page {
+  width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 16px;
+
+  &.dark-theme {
+    background-color: #1e1c1c;
+    color: #fffbfb;
+  }
+
+  &.light-theme {
+    background-color: #ffffff;
+    color: #000000;
+  }
+}
