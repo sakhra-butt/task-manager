@@ -1,59 +1,103 @@
-// src/features/authSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "../utils/axios";
 
-const initialState = {
-  user: JSON.parse(localStorage.getItem('currentUser')) || null,
-  loading: false,
-  error: null,
-};
+// Thunk for registration
+export const registerUser = createAsyncThunk(
+  "auth/registerUser",
+  async (userData, thunkAPI) => {
+    try {
+      const response = await axios.post("/auth/register", userData);
+      console.log(" Register response:", response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Register failed"
+      );
+    }
+  }
+);
+
+// Thunk for login
+export const loginUser = createAsyncThunk(
+  "auth/loginUser",
+  async (userData, thunkAPI) => {
+    try {
+      const response = await axios.post("/auth/login", userData);
+      console.log(" Login response:", response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Login failed"
+      );
+    }
+  }
+);
 
 const authSlice = createSlice({
-  name: 'auth',
-  initialState,
+  name: "auth",
+  initialState: {
+    user: JSON.parse(localStorage.getItem("user")) || null, // Load user from localStorage
+    token: localStorage.getItem("token") || null,
+    loading: false,
+    error: null,
+  },
   reducers: {
-    loginUser: (state, action) => {
-      const { email, password } = action.payload;
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-
-      const matchedUser = users.find(
-        (user) => user.email === email && user.password === password
-      );
-
-      if (matchedUser) {
-        localStorage.setItem('currentUser', JSON.stringify(matchedUser));
-        state.user = matchedUser;
-        state.error = null;
-      } else {
-        state.error = 'Invalid email or password';
-      }
-    },
-
-    registerUser: (state, action) => {
-      const { name, email, password } = action.payload;
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-
-      const existingUser = users.find((user) => user.email === email);
-
-      if (existingUser) {
-        state.error = 'User already exists with this email';
-      } else {
-        const newUser = { name, email, password };
-        const updatedUsers = [...users, newUser];
-
-        localStorage.setItem('users', JSON.stringify(updatedUsers));
-        localStorage.setItem('currentUser', JSON.stringify(newUser));
-        state.user = newUser;
-        state.error = null;
-      }
-    },
-
     logout: (state) => {
-      localStorage.removeItem('currentUser');
       state.user = null;
-      state.error = null;
+      state.token = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user"); // Remove user data too
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      // Register
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        const { name, email, _id, token } = action.payload || {};
+        if (token) {
+          const userData = { name, email, _id };
+          state.user = userData;
+          state.token = token;
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(userData)); // Store user data
+        } else {
+          state.error = "Invalid registration response";
+        }
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Login
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        const { name, email, _id, token } = action.payload || {};
+        if (token) {
+          const userData = { name, email, _id };
+          state.user = userData;
+          state.token = token;
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(userData)); // Store user data
+        } else {
+          state.error = "Invalid login response";
+        }
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const { loginUser, registerUser, logout } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

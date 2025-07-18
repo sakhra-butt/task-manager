@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema(
   {
@@ -17,10 +17,18 @@ const taskSchema = new mongoose.Schema(
     dueDate: {
       type: Date,
     },
+    status: {
+      type: String,
+      enum: ["pending", "completed", "incomplete"],
+      default: "pending",
+    },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("task", taskSchema);
+// Avoiding  model overwrite error
+const Task = mongoose.models.Task || mongoose.model("Task", taskSchema);
+
+export default Task;

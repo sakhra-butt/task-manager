@@ -1,116 +1,194 @@
-import { Form, Input, Button, Typography, message, Card } from "antd";
+import React, { useEffect } from "react";
+import { Form, Input, Button, Typography, Card, message } from "antd";
 import { useNavigate, Link } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
-import AuthLayout from "../components/authLayout";
+import { useDispatch, useSelector } from "react-redux";
+import { motion } from "framer-motion";
+import AuthLayout from "../components/AuthLayout";
+import { loginUser } from "../features/authSlice";
+import toast from "react-hot-toast";
 
 const { Title } = Typography;
 
 const Login = () => {
-  const navigate = useNavigate();
-  const { theme } = useTheme();
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleLogin = (values) => {
-    const { email, password } = values;
+  const { user, token, loading, error } = useSelector((state) => state.auth);
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+  const onFinish = (values) => {
+    // Clear any previous errors
+    form.setFields([
+      { name: "email", errors: [] },
+      { name: "password", errors: [] },
+    ]);
 
-    const matchedUser = users.find(
-      (user) => user.email === email && user.password === password
-    );
-
-    if (matchedUser) {
-      localStorage.setItem("currentUser", JSON.stringify(matchedUser));
-      message.success("Login successful!");
-      navigate("/manage-tasks");
-    } else {
-      const exists = users.find((user) => user.email === email);
-
-      if (!exists) {
-        form.setFields([
-          {
-            name: "email",
-            errors: ["User not found. Please register first."],
-          },
-        ]);
-      } else {
-        form.setFields([
-          {
-            name: "password",
-            errors: ["Incorrect password. Please try again."],
-          },
-        ]);
-      }
-    }
+    dispatch(loginUser(values));
   };
+
+  // Handle form validation errors
+  const onFinishFailed = (errorInfo) => {
+    const { errorFields } = errorInfo;
+
+    errorFields.forEach((field) => {
+      const { name, errors } = field;
+      if (errors && errors.length > 0) {
+        const fieldName = name[0];
+        const errorMessage = errors[0];
+
+        // Show specific toast for each field error
+        if (fieldName === "email") {
+          toast.error(`Email Error: ${errorMessage}`);
+        } else if (fieldName === "password") {
+          toast.error(`Password Error: ${errorMessage}`);
+        }
+      }
+    });
+  };
+
+  // Handle successful login
+  useEffect(() => {
+    if (user && token) {
+      toast.success("Login successful! Redirecting...", {
+        duration: 2000,
+      });
+
+      // Also show antd message
+      message.success("Welcome back! Login successful.");
+
+      // Small delay to show the toast before redirect
+      setTimeout(() => {
+        navigate("/manage-tasks");
+      }, 1000);
+    }
+  }, [user, token, navigate]);
+
+  // Handle login errors from API
+  useEffect(() => {
+    if (error) {
+      let errorMessage = "Login failed. Please try again.";
+
+      // Handle different types of errors
+      if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      // Show specific error messages based on error content
+      if (
+        errorMessage.toLowerCase().includes("email") ||
+        errorMessage.toLowerCase().includes("user not found")
+      ) {
+        toast.error(" Invalid email address or user not found");
+        form.setFields([
+          { name: "email", errors: ["Email not found or invalid"] },
+        ]);
+      } else if (
+        errorMessage.toLowerCase().includes("password") ||
+        errorMessage.toLowerCase().includes("incorrect")
+      ) {
+        toast.error(" Incorrect password. Please try again.");
+        form.setFields([{ name: "password", errors: ["Incorrect password"] }]);
+      } else if (
+        errorMessage.toLowerCase().includes("network") ||
+        errorMessage.toLowerCase().includes("connection")
+      ) {
+        toast.error(" Network error. Please check your connection.");
+      } else if (
+        errorMessage.toLowerCase().includes("account") &&
+        errorMessage.toLowerCase().includes("locked")
+      ) {
+        toast.error(" Account is locked. Please contact support.");
+      } else if (errorMessage.toLowerCase().includes("expired")) {
+        toast.error(" Session expired. Please try again.");
+      } else {
+        toast.error(` ${errorMessage}`);
+      }
+
+      // Also show antd message
+      message.error(errorMessage);
+    }
+  }, [error, form]);
 
   return (
     <AuthLayout>
-      <Card
-        className="themed-box"
-        variant="outlined"
-        style={{
-          width: "100%",
-          maxWidth: "480px",
-          borderRadius: 12,
-          boxShadow: "0 12px 28px rgba(0,0,0,0.1)",
-          padding: "24px",
-          backgroundColor:
-            theme === "dark" ? "rgba(30,30,30,0.95)" : "rgba(255,255,255,0.98)",
-        }}
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        style={{ width: "100%", maxWidth: 480 }}
       >
-        <Title level={2} style={{ textAlign: "center", marginBottom: 24 }}>
-          Welcome Back
-        </Title>
+        <Card
+          style={{
+            borderRadius: 16,
+            boxShadow: "0 12px 28px rgba(0,0,0,0.1)",
+            padding: 32,
+          }}
+        >
+          <Title level={3} style={{ textAlign: "center", marginBottom: 32 }}>
+            Welcome Back
+          </Title>
 
-        <Form form={form} layout="vertical" onFinish={handleLogin}>
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[{ required: true, message: "Please enter your email" }]}
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
           >
-            <Input
-              autoComplete="email"
-              size="large"
-              placeholder="Enter your email"
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Please enter your password" }]}
-          >
-            <Input.Password
-              autoComplete="current-password"
-              size="large"
-              placeholder="Enter your password"
-            />
-          </Form.Item>
-
-          <Form.Item style={{ textAlign: "right" }}>
-            <Link to="/forgot-password">Forgot Password?</Link>
-          </Form.Item>
-
-          <Form.Item>
-            <Button
-              htmlType="submit"
-              type="primary"
-              block
-              size="large"
-              className="login-btn"
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                { required: true, message: "Please enter your email" },
+                { type: "email", message: "Invalid email format" },
+              ]}
             >
-              Login
-            </Button>
-          </Form.Item>
+              <Input
+                placeholder="you@example.com"
+                size="large"
+                autoComplete="email"
+              />
+            </Form.Item>
 
-          <Form.Item style={{ textAlign: "center", marginBottom: 0 }}>
-            <span className="login-footer-text">
-              Don’t have an account? <Link to="/register">Sign Up</Link>
-            </span>
-          </Form.Item>
-        </Form>
-      </Card>
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[
+                { required: true, message: "Please enter your password" },
+                { min: 6, message: "Password must be at least 6 characters" },
+              ]}
+            >
+              <Input.Password
+                placeholder="Your password"
+                size="large"
+                autoComplete="current-password"
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Link to="/forgot-password">Forgot Password?</Link>
+            </Form.Item>
+
+            <Form.Item style={{ marginTop: 16 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                block
+                size="large"
+                loading={loading}
+              >
+                {loading ? "Logging in..." : "Login"}
+              </Button>
+            </Form.Item>
+
+            <Form.Item style={{ textAlign: "center", marginBottom: 0 }}>
+              Don't have an account? <Link to="/register">Register</Link>
+            </Form.Item>
+          </Form>
+        </Card>
+      </motion.div>
     </AuthLayout>
   );
 };

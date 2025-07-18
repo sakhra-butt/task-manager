@@ -1,39 +1,35 @@
-// backend/server.js
-const express = require("express");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const connectDB = require("./config/db");
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors"; // Add CORS
+import authRoutes from "./routes/authRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
 
-// Load .env variables
+import { protect } from "./middleware/authMiddleware.js";
+import connectDB from "./config/db.js";
+
 dotenv.config();
-
-// Initialize Express app
-const app = express();
-
-// Connect to MongoDB
 connectDB();
 
-// Middleware
-app.use(cors());
+const app = express();
+
+//  Enable CORS for frontend (e.g. Vite on http://localhost:5173)
+app.use(
+  cors({
+    origin: "http://localhost:5173", // allow your frontend origin
+    credentials: true, // allow cookies/auth headers if needed
+  })
+);
+
 app.use(express.json());
 
-// Routes
-const authRoutes = require("./routes/authRoutes");
-const protectedRoute = require("./routes/protectedRoute");
-const taskRoutes = require("./routes/taskRoutes");
-app.use("/api/tasks", taskRoutes);
-
 app.use("/api/auth", authRoutes);
-app.use("/api/protected", protectedRoute);
+app.use("/api/tasks", protect, taskRoutes);
 
-// Default route (optional)
-// app.get("/", (req, res) => {
-//   res.send("API is running...");
-// });
-
-// Server port
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Server Error" });
 });
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(` Server running on port ${PORT}`));

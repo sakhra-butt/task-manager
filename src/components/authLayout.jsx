@@ -1,39 +1,44 @@
 import React from "react";
-import logo from "../assets/react.svg";
-import Switch from "react-switch";
+import logo from "../assets/note.svg";
+// import Switch from "react-switch"; // Commented out - not needed when theme toggle is disabled
 import { useTheme } from "../context/ThemeContext";
 
 const authLayout = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
 
-  const backgroundImage =
-    theme === "dark" ? 'url("/dark-shape.svg")' : 'url("/light-shape.svg")';
+  // Commented out background image logic
+  // const backgroundImage =
+  //   theme === "dark" ? 'url("/dark-shape.svg")' : 'url("/light-shape.svg")';
 
   return (
     <div
       className={`auth-layout ${theme}-theme`}
       style={{
         minHeight: "100vh",
-        backgroundImage,
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center center",
-        backgroundAttachment: "scroll", // not 'fixed' to avoid mobile issues
-        backgroundSize: "cover",
+        // Commented out background styling
+        // backgroundImage,
+        // backgroundRepeat: "no-repeat",
+        // backgroundPosition: "center center",
+        // backgroundAttachment: "scroll",
+        // backgroundSize: "cover",
+
         display: "flex",
         flexDirection: "column",
       }}
     >
-      {/* Theme Toggle */}
+      {/* Commented out Theme Toggle */}
+      {/* 
       <div style={{ position: "fixed", top: 20, right: 20, zIndex: 1000 }}>
         <label style={{ marginRight: 8 }}>
           {theme === "dark" ? "Dark" : "Light"}
         </label>
         <Switch onChange={toggleTheme} checked={theme === "dark"} />
       </div>
+      */}
 
       {/* Logo */}
       <div style={{ position: "fixed", top: 20, left: 20, zIndex: 1000 }}>
-        <img src={logo} alt="Logo" style={{ height: 40 }} />
+        <img src={logo} alt="Logo" style={{ height: 60 }} />
       </div>
 
       {/* Page Content */}

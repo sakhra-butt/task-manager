@@ -1,11 +1,13 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
   },
   { timestamps: true }
 );
@@ -18,12 +20,12 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// Compare password method
+// for compare password method
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Prevent OverwriteModelError
+// Avoiding OverwriteModelError
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-module.exports = User;
+export default User;
