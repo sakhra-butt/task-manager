@@ -1,4 +1,7 @@
+// Core/Library
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+// Third-party
 import axios from "../utils/axios";
 
 // Thunk for registration

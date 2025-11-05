@@ -1,11 +1,16 @@
+// Core/Library
 import React, { useEffect } from "react";
 import { Form, Input, Button, Typography, Card, message } from "antd";
 import { useNavigate, Link } from "react-router-dom";
+
+// Third-party
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+
+// Local
 import AuthLayout from "../components/AuthLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../features/authSlice";
-import toast from "react-hot-toast";
 
 const { Title } = Typography;
 
@@ -67,7 +72,7 @@ const Register = () => {
 
       // Small delay to show the toast before redirect
       setTimeout(() => {
-        navigate("/manage-tasks");
+        navigate("/dashboard");
       }, 1500);
     }
   }, [user, token, navigate]);
@@ -164,7 +169,7 @@ const Register = () => {
           style={{
             borderRadius: 16,
             boxShadow: "0 12px 28px rgba(0,0,0,0.1)",
-            padding: 24,
+            padding: 32,
           }}
         >
           <Title level={3} style={{ textAlign: "center", marginBottom: 24 }}>
@@ -267,6 +272,10 @@ const Register = () => {
                 block
                 size="large"
                 loading={loading}
+                style={{
+                  background: "linear-gradient(135deg, #1890ff 0%, #722ed1 100%)",
+                  border: "none",
+                }}
               >
                 {loading ? "Creating Account..." : "Register"}
               </Button>

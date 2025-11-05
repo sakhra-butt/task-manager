@@ -1,10 +1,16 @@
+// Core/Library
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Typography, Card, message } from "antd";
+
+// Third-party
 import axios from "axios";
+import toast from "react-hot-toast";
+import * as chrono from "chrono-node";
+
+// Local
 import { useTheme } from "../context/ThemeContext";
 import AuthLayout from "../components/AuthLayout";
-import toast from "react-hot-toast";
 
 const { Title } = Typography;
 
@@ -232,6 +238,10 @@ const ResetPassword = () => {
               block
               size="large"
               loading={loading}
+              style={{
+                background: "linear-gradient(135deg, #1890ff 0%, #722ed1 100%)",
+                border: "none",
+              }}
             >
               {loading ? "Resetting Password..." : "Reset Password"}
             </Button>

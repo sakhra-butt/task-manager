@@ -1,0 +1,60 @@
+.dashboard {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #c4c6c7;
+    color: #181717;
+    padding: 1rem 2rem;
+
+    .logo {
+      color: #fff;
+      margin: 0;
+    }
+
+    .email {
+      margin-right: 1rem;
+      color: #fff;
+    }
+
+    button {
+      background-color: #f5222d;
+      border: none;
+    }
+  }
+
+  .dashboard-container {
+    padding: 1rem;
+
+    .cards-row {
+      margin-bottom: 2rem;
+
+      .card {
+        text-align: center;
+        font-size: 1.5rem;
+
+        &.completed {
+          border-left: 5px solid #52c41a;
+        }
+        &.incomplete {
+          border-left: 5px solid #f5222d;
+        }
+        &.pending {
+          border-left: 5px solid #faad14;
+        }
+      }
+    }
+
+    .charts-row {
+      .ant-card {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 350px;
+      }
+    }
+  }
+}

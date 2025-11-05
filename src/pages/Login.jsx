@@ -1,11 +1,16 @@
+// Core/Library
 import React, { useEffect } from "react";
 import { Form, Input, Button, Typography, Card, message } from "antd";
 import { useNavigate, Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+
+// Third-party
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+
+// Local
+import { useDispatch, useSelector } from "react-redux";
 import AuthLayout from "../components/AuthLayout";
 import { loginUser } from "../features/authSlice";
-import toast from "react-hot-toast";
 
 const { Title } = Typography;
 
@@ -58,7 +63,7 @@ const Login = () => {
 
       // Small delay to show the toast before redirect
       setTimeout(() => {
-        navigate("/manage-tasks");
+        navigate("/dashboard");
       }, 1000);
     }
   }, [user, token, navigate]);
@@ -106,7 +111,6 @@ const Login = () => {
         toast.error(` ${errorMessage}`);
       }
 
-      // Also show antd message
       message.error(errorMessage);
     }
   }, [error, form]);
@@ -178,6 +182,11 @@ const Login = () => {
                 block
                 size="large"
                 loading={loading}
+                style={{
+                  background:
+                    "linear-gradient(135deg, #1890ff 0%, #722ed1 100%)",
+                  border: "none",
+                }}
               >
                 {loading ? "Logging in..." : "Login"}
               </Button>

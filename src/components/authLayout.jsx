@@ -1,5 +1,5 @@
-import React from "react";
-import logo from "../assets/note.svg";
+// Local
+import logo from "../assets/logo.png";
 // import Switch from "react-switch"; // Commented out - not needed when theme toggle is disabled
 import { useTheme } from "../context/ThemeContext";
 
@@ -15,13 +15,7 @@ const authLayout = ({ children }) => {
       className={`auth-layout ${theme}-theme`}
       style={{
         minHeight: "100vh",
-        // Commented out background styling
-        // backgroundImage,
-        // backgroundRepeat: "no-repeat",
-        // backgroundPosition: "center center",
-        // backgroundAttachment: "scroll",
-        // backgroundSize: "cover",
-
+        background: "linear-gradient(135deg, #1890ff 0%, #722ed1 100%)",
         display: "flex",
         flexDirection: "column",
       }}
@@ -38,7 +32,7 @@ const authLayout = ({ children }) => {
 
       {/* Logo */}
       <div style={{ position: "fixed", top: 20, left: 20, zIndex: 1000 }}>
-        <img src={logo} alt="Logo" style={{ height: 60 }} />
+        <img src={logo} alt="Logo" style={{ height: 100, width: 100 }} />
       </div>
 
       {/* Page Content */}

@@ -1,4 +1,7 @@
+// Core/Library
 import { configureStore } from "@reduxjs/toolkit";
+
+// Local
 import authReducer from "./features/authSlice";
 import taskReducer from "./features/taskSlice";
 
