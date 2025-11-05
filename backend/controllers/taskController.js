@@ -17,15 +17,21 @@ export const getTasks = async (req, res) => {
 //  POST /api/tasks
 // @access  Private
 export const addTask = async (req, res) => {
-  const { title, description, dueDate, status } = req.body;
+  const { title, description, dueDate, status, priority } = req.body;
 
   try {
+    // Prevent duplicate task titles for the same user
+    const existingTask = await Task.findOne({ user: req.user._id, title });
+    if (existingTask) {
+      return res.status(400).json({ message: "A task with this name already exists." });
+    }
     const task = new Task({
       user: req.user._id,
       title,
       description,
       dueDate,
       status,
+      priority,
     });
 
     const saved = await task.save();

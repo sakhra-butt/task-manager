@@ -121,6 +121,8 @@ export const updateTask = createAsyncThunk(
   }
 );
 
+// NOTE: The tasks state is stored in 'list', not 'tasks'.
+
 const initialState = {
   list: [],
   loading: false,
@@ -146,7 +148,7 @@ const taskSlice = createSlice({
     builder
       // fetchTasks
       .addCase(fetchTasks.pending, (state) => {
-        state.loading = true;
+        state.loading = false; //  loading  false for immediately for faster UI update
         state.error = null;
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {

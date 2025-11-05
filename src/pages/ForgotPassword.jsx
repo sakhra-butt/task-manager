@@ -1,10 +1,15 @@
+// Core/Library
 import React, { useState } from "react";
 import { Form, Input, Button, Typography, Card, message } from "antd";
-import { useTheme } from "../context/ThemeContext";
 import { Link, useNavigate } from "react-router-dom";
-import AuthLayout from "../components/AuthLayout";
+
+// Third-party
 import axios from "axios";
 import toast from "react-hot-toast";
+
+// Local
+import { useTheme } from "../context/ThemeContext";
+import AuthLayout from "../components/AuthLayout";
 
 const { Title, Text } = Typography;
 
@@ -175,6 +180,10 @@ const ForgotPassword = () => {
               block
               size="large"
               loading={loading}
+              style={{
+                background: "linear-gradient(135deg, #1890ff 0%, #722ed1 100%)",
+                border: "none",
+              }}
             >
               {loading ? "Sending Reset Link..." : "Send Reset Link"}
             </Button>
