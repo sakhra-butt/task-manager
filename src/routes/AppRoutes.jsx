@@ -5,6 +5,7 @@ import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
 import ManageTasks from "../pages/ManageTasks";
 import ResetPassword from "../pages/ResetPassword";
+import Dashboard from "../pages/Dashboard";
 
 const AppRoutes = () => {
   return (
@@ -15,6 +16,8 @@ const AppRoutes = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/manage-tasks" element={<ManageTasks />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+      <Route path="/dashboard" element={<Dashboard />} />
     </Routes>
   );
 };
