@@ -1,9 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors"; // Add CORS
+import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
-
 import { protect } from "./middleware/authMiddleware.js";
 import connectDB from "./config/db.js";
 
@@ -12,13 +11,23 @@ connectDB();
 
 const app = express();
 
-//  Enable CORS for frontend (e.g. Vite on http://localhost:5173)
-app.use(
-  cors({
-    origin: "https://sak-task-manager.netlify.app", //  frontend origin
-    credentials: false, 
-  })
-);
+// Allow both Netlify frontend and local development
+const allowedOrigins = [
+  "https://sak-task-manager.netlify.app", // production
+  "http://localhost:5173",               // local dev
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); // allow non-browser tools like Postman
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("CORS not allowed for this origin"));
+    }
+  },
+  credentials: true, // enable if you use cookies (JWT in header is fine either way)
+}));
 
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
@@ -36,4 +45,4 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
