@@ -15,8 +15,8 @@ const app = express();
 //  Enable CORS for frontend (e.g. Vite on http://localhost:5173)
 app.use(
   cors({
-    origin: "*", // allow your frontend origin
-    credentials: false, // allow cookies/auth headers if needed
+    origin: "https://sak-task-manager.netlify.app", //  frontend origin
+    credentials: false, 
   })
 );
 
