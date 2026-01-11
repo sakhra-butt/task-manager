@@ -1,8 +1,6 @@
-
 import { Routes, Route, Navigate } from "react-router-dom";
 
-
-import Login from "../pages/login";
+import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
 import ManageTasks from "../pages/ManageTasks";
@@ -51,7 +49,6 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       />
-      {/* Default route: if logged in, go to dashboard, else login */}
       <Route
         path="/"
         element={
@@ -60,7 +57,6 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       />
-      {/* Catch-all: redirect to dashboard or login */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
