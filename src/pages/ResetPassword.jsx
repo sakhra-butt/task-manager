@@ -1,254 +1,236 @@
-// Core/Library
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Form, Input, Button, Typography, Card, message } from "antd";
-
-// Third-party
 import axios from "axios";
 import toast from "react-hot-toast";
-import * as chrono from "chrono-node";
+import { motion } from "framer-motion";
+import { Moon, Sun } from "lucide-react"; // 🌙☀️ icons
 
-// Local
 import { useTheme } from "../context/ThemeContext";
-import AuthLayout from "../components/AuthLayout";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
-  const { theme } = useTheme();
-  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+
+  const { theme, toggleTheme } = useTheme(); 
+  const isDark = theme === "dark";
 
   const handleSubmit = async (values) => {
     const { password, confirmPassword } = values;
 
-    // Clear any previous errors
-    form.setFields([
-      { name: "password", errors: [] },
-      { name: "confirmPassword", errors: [] },
-    ]);
-
     if (password !== confirmPassword) {
-      toast.error(" Passwords do not match. Please try again.");
+      toast.error("Passwords do not match");
       form.setFields([
         { name: "confirmPassword", errors: ["Passwords do not match"] },
       ]);
-      return message.error("Passwords do not match");
+      return;
     }
 
     setLoading(true);
     try {
-      const res = await axios.post(
-        `http://localhost:5000/api/auth/reset-password/${token}`,
-        { password }
-      );
-
-      // Success notifications
-      toast.success(" Password reset successfully!", {
-        duration: 3000,
-
-        style: {
-          borderRadius: "10px",
-          background: "#10B981",
-          color: "#fff",
-        },
+      await axios.post(`http://localhost:5000/api/auth/reset-password/${token}`, {
+        password,
       });
 
+      toast.success("Password reset successfully! 🔐");
       message.success("Password reset successfully. Please login.");
-
-      // Small delay before redirect to show success message
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
+      setTimeout(() => navigate("/login"), 1500);
     } catch (error) {
-      console.error("Reset failed:", error.response?.data || error.message);
-
-      let errorMessage = "Reset password failed. Please try again.";
-
-      // Handle different types of errors
-      if (error?.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-
-      // Show specific error messages based on error content
-      if (
-        errorMessage.toLowerCase().includes("token") &&
-        errorMessage.toLowerCase().includes("invalid")
-      ) {
-        toast.error(
-          "Invalid reset token. Please request a new password reset."
-        );
-      } else if (
-        errorMessage.toLowerCase().includes("token") &&
-        errorMessage.toLowerCase().includes("expired")
-      ) {
-        toast.error(
-          " Reset token has expired. Please request a new password reset."
-        );
-      } else if (
-        errorMessage.toLowerCase().includes("password") &&
-        errorMessage.toLowerCase().includes("weak")
-      ) {
-        toast.error(
-          " Password is too weak. Use at least 8 characters with numbers and symbols."
-        );
-        form.setFields([
-          { name: "password", errors: ["Password is too weak"] },
-        ]);
-      } else if (
-        errorMessage.toLowerCase().includes("password") &&
-        errorMessage.toLowerCase().includes("short")
-      ) {
-        toast.error(" Password is too short. Minimum 6 characters required.");
-        form.setFields([{ name: "password", errors: ["Password too short"] }]);
-      } else if (
-        errorMessage.toLowerCase().includes("password") &&
-        errorMessage.toLowerCase().includes("same")
-      ) {
-        toast.error("New password cannot be the same as the old password.");
-        form.setFields([
-          { name: "password", errors: ["Cannot use the same password"] },
-        ]);
-      } else if (
-        errorMessage.toLowerCase().includes("network") ||
-        errorMessage.toLowerCase().includes("connection")
-      ) {
-        toast.error(" Network error. Please check your internet connection.");
-      } else if (
-        errorMessage.toLowerCase().includes("server") ||
-        errorMessage.toLowerCase().includes("500")
-      ) {
-        toast.error(" Server error. Please try again later.");
-      } else if (errorMessage.toLowerCase().includes("timeout")) {
-        toast.error("Request timeout. Please try again.");
-      } else if (
-        errorMessage.toLowerCase().includes("user") &&
-        errorMessage.toLowerCase().includes("not found")
-      ) {
-        toast.error(" User not found. Please request a new password reset.");
-      } else {
-        toast.error(` ${errorMessage}`);
-      }
-
-      message.error(errorMessage);
+      const msg =
+        error?.response?.data?.message ||
+        error.message ||
+        "Reset password failed. Please try again.";
+      toast.error(msg);
+      message.error(msg);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle form validation errors
-  const onFinishFailed = (errorInfo) => {
-    const { errorFields } = errorInfo;
-
-    errorFields.forEach((field) => {
-      const { name, errors } = field;
-      if (errors && errors.length > 0) {
-        const fieldName = name[0];
-        const errorMessage = errors[0];
-
-        // Show specific toast for each field error
-        if (fieldName === "password") {
-          toast.error(`Password Error: ${errorMessage}`);
-        } else if (fieldName === "confirmPassword") {
-          toast.error(`Confirm Password Error: ${errorMessage}`);
-        }
-      }
-    });
-  };
-
   return (
-    <AuthLayout>
-      <Card
-        className="themed-box"
-        variant="outlined"
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1522205408450-add114ad53fe?auto=format&fit=crop&w=1400&q=80')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backdropFilter: "blur(12px)",
+        padding: "2rem",
+        position: "relative", 
+        transition: "background 0.3s ease",
+      }}
+    >
+      {/* 🌙☀️ Theme Toggle */}
+      <div
+        onClick={toggleTheme}
         style={{
-          width: "100%",
-          maxWidth: 480,
-          borderRadius: 12,
-          boxShadow: "0 12px 28px rgba(0,0,0,0.1)",
-          padding: "32px",
-          backgroundColor:
-            theme === "dark" ? "rgba(30,30,30,0.9)" : "rgba(255,255,255,0.95)",
+          position: "absolute",
+          top: 20,
+          right: 25,
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          background: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
         }}
       >
-        <Title level={3} style={{ textAlign: "center" }}>
-          Reset Password
-        </Title>
+        {isDark ? <Sun size={20} color="#FFD700" /> : <Moon size={20} color="#000" />}
+      </div>
 
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          onFinishFailed={onFinishFailed}
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        style={{ width: "100%", maxWidth: 480 }}
+      >
+        <Card
+          style={{
+            borderRadius: 20,
+            boxShadow: isDark
+              ? "0 8px 32px rgba(0, 0, 0, 0.7)"
+              : "0 8px 32px rgba(0, 0, 0, 0.2)",
+            padding: "2.5rem",
+            backdropFilter: "blur(16px)",
+            background: isDark ? "rgba(30, 30, 30, 0.85)" : "rgba(255, 255, 255, 0.85)",
+            border: isDark
+              ? "1px solid rgba(255, 255, 255, 0.1)"
+              : "1px solid rgba(255, 255, 255, 0.3)",
+            color: isDark ? "#fff" : "#000",
+            transition: "all 0.3s ease",
+          }}
         >
-          <Form.Item
-            label="New Password"
-            name="password"
-            rules={[
-              { required: true, message: "Please enter a new password" },
-              { min: 6, message: "Password must be at least 6 characters" },
-              { max: 100, message: "Password cannot exceed 100 characters" },
-              {
-                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                message:
-                  "Password must contain at least one uppercase letter, one lowercase letter, and one number",
-              },
-            ]}
+          <Title
+            level={2}
+            style={{
+              textAlign: "center",
+              marginBottom: 32,
+              background: "linear-gradient(135deg, #1890ff, #722ed1)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontWeight: "bold",
+            }}
           >
-            <Input.Password
-              size="large"
-              placeholder="Enter your new password"
-              style={{ opacity: 1 }}
-            />
-          </Form.Item>
+            Reset Password 🔒
+          </Title>
 
-          <Form.Item
-            label="Confirm Password"
-            name="confirmPassword"
-            dependencies={["password"]}
-            rules={[
-              { required: true, message: "Please confirm your password" },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("The passwords do not match")
-                  );
+          <Text
+            style={{
+              display: "block",
+              marginBottom: 24,
+              textAlign: "center",
+              fontSize: "0.95rem",
+              color: isDark ? "#ccc" : "#555", 
+            }}
+          >
+            Enter a new password for your account.
+          </Text>
+
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            autoComplete="off"
+          >
+            <Form.Item
+              label="New Password"
+              name="password"
+              rules={[
+                { required: true, message: "Please enter your new password" },
+                { min: 6, message: "Password must be at least 6 characters" },
+                {
+                  pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+                  message:
+                    "Password must include uppercase, lowercase, and a number",
                 },
-              }),
-            ]}
-          >
-            <Input.Password
-              size="large"
-              placeholder="Confirm your new password"
-              style={{ opacity: 1 }}
-            />
-          </Form.Item>
-
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              block
-              size="large"
-              loading={loading}
-              style={{
-                background: "linear-gradient(135deg, #1890ff 0%, #722ed1 100%)",
-                border: "none",
-              }}
+              ]}
             >
-              {loading ? "Resetting Password..." : "Reset Password"}
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
-    </AuthLayout>
+              <Input.Password
+                placeholder="Enter new password"
+                size="large"
+                style={{
+                  borderRadius: 8,
+                  background: isDark ? "#1f1f1f" : "#fff",
+                  color: isDark ? "#fff" : "#000",
+                  border: isDark ? "1px solid #333" : "1px solid #d9d9d9",
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Confirm Password"
+              name="confirmPassword"
+              dependencies={["password"]}
+              rules={[
+                { required: true, message: "Please confirm your password" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value)
+                      return Promise.resolve();
+                    return Promise.reject(new Error("Passwords do not match"));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password
+                placeholder="Confirm new password"
+                size="large"
+                style={{
+                  borderRadius: 8,
+                  background: isDark ? "#1f1f1f" : "#fff",
+                  color: isDark ? "#fff" : "#000",
+                  border: isDark ? "1px solid #333" : "1px solid #d9d9d9",
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item style={{ marginTop: 16 }}>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  size="large"
+                  loading={loading}
+                  style={{
+                    border: "none",
+                    borderRadius: 8,
+                    background: "linear-gradient(135deg, #1890ff 0%, #722ed1 100%)",
+                    boxShadow: "0 4px 14px rgba(24, 144, 255, 0.4)",
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  {loading ? "Resetting..." : "Reset Password"}
+                </Button>
+              </motion.div>
+            </Form.Item>
+
+            <Form.Item style={{ textAlign: "center", marginBottom: 0 }}>
+              <Link
+                to="/login"
+                style={{
+                  fontWeight: 500,
+                  color: isDark ? "#9b87f5" : "#722ed1",
+                }}
+              >
+                Back to Login
+              </Link>
+            </Form.Item>
+          </Form>
+        </Card>
+      </motion.div>
+    </div>
   );
 };
 

@@ -1,8 +1,8 @@
-// Core/Library
+
 import { Routes, Route, Navigate } from "react-router-dom";
 
-// Local
-import Login from "../pages/Login";
+
+import Login from "../pages/login";
 import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
 import ManageTasks from "../pages/ManageTasks";
