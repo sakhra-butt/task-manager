@@ -11,10 +11,9 @@ connectDB();
 
 const app = express();
 
-// Allow both Netlify frontend and local development
 const allowedOrigins = [
-  "https://sak-task-manager.netlify.app", // production
-  "http://localhost:5173",               // local dev
+  "https://task-manager-beta-ashen.vercel.app",
+  "http://localhost:5173",
 ];
 
 app.use(cors({
