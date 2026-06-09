@@ -13,6 +13,7 @@ const app = express();
 
 const allowedOrigins = [
   "https://task-manager-beta-ashen.vercel.app",
+  "https://task-manager-git-main-sakhras-projects.vercel.app",
   "http://localhost:5173",
 ];
 
